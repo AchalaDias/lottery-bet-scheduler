@@ -1,9 +1,11 @@
 import ballerina/io;
 import ballerina/random;
 import ballerinax/mongodb;
+import ballerina/http;
 
 configurable string host = ?;
 configurable string database = ?;
+configurable string resultHost = ?;
 const string lotteryCollection = "lottery";
 
 final mongodb:Client mongoDb = check new ({
@@ -38,11 +40,14 @@ public function main() returns error? {
             item.winner = false;
         }
         boolean res = check updateLotteryBet(Db, item);
-        if(!res) {
+        if (!res) {
             io:println("Error updating bet record of " + item.email);
         }
     }
     io:println("Scheduler job done!");
+
+    http:Client albumClient = check new (resultHost);
+    http:Response response = check albumClient->get("slotmachineresults/diaspositive@gmail.com");
 }
 
 isolated function updateLotteryBet(mongodb:Database Db, Lottery lot) returns boolean|error {
