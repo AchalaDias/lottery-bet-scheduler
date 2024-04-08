@@ -2,6 +2,7 @@ import ballerina/io;
 import ballerina/random;
 import ballerinax/mongodb;
 import ballerina/http;
+import ballerina/log;
 
 configurable string host = ?;
 configurable string database = ?;
@@ -48,6 +49,7 @@ public function main() returns error? {
 
     http:Client albumClient = check new (resultHost);
     http:Response response = check albumClient->get("slotmachineresults/diaspositive@gmail.com");
+    log:printDebug("****************************************" + response.statusCode.toBalString() + "****************************************");
 }
 
 isolated function updateLotteryBet(mongodb:Database Db, Lottery lot) returns boolean|error {
